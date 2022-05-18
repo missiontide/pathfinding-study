@@ -1,4 +1,4 @@
 # pathfinding-study
 
-A study of pathfinding algorithms including a **visualizer**. \
+Studying and **visualizer** pathfinding algorithms. \
 made by [@missiontide](https://missiontide.com).
