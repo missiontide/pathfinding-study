@@ -8,6 +8,10 @@
     background: green;
 }
 
-.node-finish {
+.node-target {
     background: blue;
+}
+
+.node-visited {
+    background: orange;
 }
