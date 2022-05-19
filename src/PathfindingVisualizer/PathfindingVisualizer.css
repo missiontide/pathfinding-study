@@ -1,0 +1,8 @@
+.gridWrapper {
+    margin: 100px 100px;
+}
+
+.row {
+    display:grid;
+    grid-template-columns: repeat(50, 0fr);
+}
