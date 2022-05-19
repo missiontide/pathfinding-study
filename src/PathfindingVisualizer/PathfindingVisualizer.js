@@ -75,7 +75,7 @@ export default class PathfindingVisualizer extends React.Component {
                 const newNodesGrid = this.state.nodesGrid.slice();
                 newNodesGrid[node.row][node.col].state = NState.visited;
                 this.setState({nodesGrid: newNodesGrid})
-            }, 10 * idx);
+            }, 5 * idx);
         })
     }
 

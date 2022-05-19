@@ -61,6 +61,5 @@ function isValid(nodesGrid, row, col) {
 
     // if cell has NOT been visited, return true
     const state = nodesGrid[row][col].state;
-    console.log(state);
     return state === NState.unvisited || state === NState.target;
 }
