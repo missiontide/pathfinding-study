@@ -79,23 +79,32 @@ export default class PathfindingVisualizer extends React.Component {
         })
     }
 
-    // handleMouseDown = (row, col) => {
-    //     this.setState({mouseIsPressed: true})
-    // }
-    //
-    // handleMouseEnter = (row, col) => {
-    //
-    // }
-    //
-    // handleMouseUp = () => {
-    //     this.setState({mouseIsPressed: false})
-    // }
+    handleMouseDown = (row, col) => {
+        this.setState({
+            nodesGrid: getNewGridWithWallToggled(this.state.nodesGrid, row, col),
+            mouseIsPressed: true
+        })
+    }
+
+    handleMouseEnter = (row, col) => {
+        if (!this.state.mouseIsPressed) return;
+        this.setState({
+            nodesGrid: getNewGridWithWallToggled(this.state.nodesGrid, row, col)
+        })
+    }
+
+    handleMouseUp = () => {
+        this.setState({mouseIsPressed: false})
+    }
 
     render () {
         return (
             <>
                 <button onClick={() => this.visualizeBFS()}>
                     Visualize BFS Algorithm
+                </button>
+                <button onClick={() => {this.setState({nodesGrid: this.createNodes()})}}>
+                    Reset
                 </button>
 
                 <div className="gridWrapper">
@@ -108,9 +117,9 @@ export default class PathfindingVisualizer extends React.Component {
                                         row={node.row}
                                         col={node.col}
                                         state={node.state}
-                                        // onMouseDown={this.handleMouseDown}
-                                        // onMouseEnter={this.handleMouseEnter}
-                                        // onMouseUp={this.handleMouseUp}
+                                        onMouseDown={this.handleMouseDown}
+                                        onMouseEnter={this.handleMouseEnter}
+                                        onMouseUp={this.handleMouseUp}
                                     />
                                 )}
                             </div>
@@ -120,4 +129,19 @@ export default class PathfindingVisualizer extends React.Component {
             </>
         )
     }
+}
+
+function getNewGridWithWallToggled(nodesGrid,  row, col) {
+    const newNodesGrid = nodesGrid.slice();
+
+    switch (newNodesGrid[row][col].state) {
+        case NState.wall:
+            newNodesGrid[row][col].state = NState.unvisited; break;
+        case NState.unvisited:
+            newNodesGrid[row][col].state = NState.wall; break;
+        default:
+            break;
+    }
+
+    return newNodesGrid;
 }

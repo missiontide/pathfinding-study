@@ -20,14 +20,12 @@ export default class Node extends React.Component {
                 extraClassName = "";
         }
 
-        const {row, col} = this.props;
-
         return (
             <div
                 className={`node ${extraClassName}`}
-                // onMouseDown={() => this.props.onMouseDown(row, col)}
-                // onMouseEnter={() => this.props.onMouseEnter(row, col)}
-                // onMouseUp={() => this.props.onMouseUp()}
+                onMouseDown={() => this.props.onMouseDown(this.props.row, this.props.col)}
+                onMouseEnter={() => this.props.onMouseEnter(this.props.row, this.props.col)}
+                onMouseUp={() => this.props.onMouseUp()}
             >
             </div>
         )

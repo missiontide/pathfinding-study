@@ -15,3 +15,7 @@
 .node-visited {
     background: orange;
 }
+
+.node-wall {
+    background: grey;
+}
