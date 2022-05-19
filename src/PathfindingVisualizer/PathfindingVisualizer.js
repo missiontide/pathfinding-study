@@ -6,36 +6,52 @@ import BFS from "../algorithms/BFS";
 
 const ROWS = 25;
 const COLS = 50;
-const START_NODE_ROW = 5;
-const START_NODE_COL = 5;
-const TARGET_NODE_ROW = 10;
-const TARGET_NODE_COL = 10;
+const START_NODE_ROW = 10;
+const START_NODE_COL = 10;
+const TARGET_NODE_ROW = 11;
+const TARGET_NODE_COL = 25;
+
+// enum representing different node states
+export const NState = Object.freeze({
+    start: 0,
+    target: 1,
+    wall: 2,
+    visited: 3,
+    unvisited: 4,
+})
 
 export default class PathfindingVisualizer extends React.Component {
     constructor(props) {
         super(props);
-        const nodes = this.createNodes();
+
+        const nodesGrid = this.createNodes();
+
         this.state = {
-            nodes: nodes,
+            nodesGrid: nodesGrid,
             rows: ROWS,
             cols: COLS,
-            startNode: nodes[START_NODE_ROW][START_NODE_COL], // is set in componentDidMount
-            targetNode: nodes[TARGET_NODE_ROW][TARGET_NODE_COL],
+            startNode: nodesGrid[START_NODE_ROW][START_NODE_COL],
+            targetNode: nodesGrid[TARGET_NODE_ROW][TARGET_NODE_COL],
+            mouseIsPressed: false,
         };
     }
 
-    createNode = (row, col, isVisited=false) => {
+    createNode(row, col, isVisited=false) {
+        // check if node is start or target -- other state is unvisited
+        let state;
+        if (row === START_NODE_ROW && col === START_NODE_COL) { state = NState.start; }
+        else if (row === TARGET_NODE_ROW && col === TARGET_NODE_COL) { state = NState.target; }
+        else { state = NState.unvisited; }
+
         return {
             col: col,
             row: row,
-            isStart: row === START_NODE_ROW && col === START_NODE_COL,
-            isTarget: row === TARGET_NODE_ROW && col === TARGET_NODE_COL,
-            isVisited: isVisited,
+            state: state,
         }
     }
 
-    createNodes = () => {
-        const nodes = [];
+    createNodes() {
+        const nodesGrid = [];
         for (let row = 0; row < ROWS; row++) {
             const currentRow = [];
             for (let col = 0; col < COLS; col++) {
@@ -43,30 +59,39 @@ export default class PathfindingVisualizer extends React.Component {
                 const currentNode = this.createNode(row, col);
                 currentRow.push(currentNode);
             }
-            nodes.push(currentRow);
+            nodesGrid.push(currentRow);
         }
 
-        return nodes;
+        return nodesGrid;
     }
 
     visualizeBFS() {
         // create a shallow copy so we don't edit the nodes in our state
-        const shallowCopyNodes = JSON.parse(JSON.stringify(this.state.nodes));
-        const visitedNodesInOrder = BFS(shallowCopyNodes, this.state.startNode, this.state.targetNode);
+        const shallowCopyNodesGrid = JSON.parse(JSON.stringify(this.state.nodesGrid));
+        const visitedNodesInOrder = BFS(shallowCopyNodesGrid, this.state.startNode, this.state.targetNode);
 
         visitedNodesInOrder.forEach((node, idx) => {
             setTimeout(() => {
-                const nodes = this.state.nodes.slice();
-                nodes[node.row][node.col].isVisited = true;
-                this.setState({nodes: nodes})
-            }, 15 * idx);
+                const newNodesGrid = this.state.nodesGrid.slice();
+                newNodesGrid[node.row][node.col].state = NState.visited;
+                this.setState({nodesGrid: newNodesGrid})
+            }, 10 * idx);
         })
     }
 
-    render () {
-        console.log("render")
-        const {nodes} = this.state;
+    // handleMouseDown = (row, col) => {
+    //     this.setState({mouseIsPressed: true})
+    // }
+    //
+    // handleMouseEnter = (row, col) => {
+    //
+    // }
+    //
+    // handleMouseUp = () => {
+    //     this.setState({mouseIsPressed: false})
+    // }
 
+    render () {
         return (
             <>
                 <button onClick={() => this.visualizeBFS()}>
@@ -74,17 +99,18 @@ export default class PathfindingVisualizer extends React.Component {
                 </button>
 
                 <div className="gridWrapper">
-                    {nodes.map((row, rowIdx) => {
+                    {this.state.nodesGrid.map((row, rowIdx) => {
                         return (
                             <div className="row" key={rowIdx}>
-                                {row.map((node, nodeIdx) =>
+                                {row.map(node =>
                                     <Node
                                         key={node.row + "-" + node.col}
                                         row={node.row}
                                         col={node.col}
-                                        isStart={node.isStart}
-                                        isTarget={node.isTarget}
-                                        isVisited={node.isVisited}
+                                        state={node.state}
+                                        // onMouseDown={this.handleMouseDown}
+                                        // onMouseEnter={this.handleMouseEnter}
+                                        // onMouseUp={this.handleMouseUp}
                                     />
                                 )}
                             </div>
